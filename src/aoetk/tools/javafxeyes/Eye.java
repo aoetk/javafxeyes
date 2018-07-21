@@ -33,21 +33,19 @@ public class Eye extends StackPane {
      * @param mouseY Relative y coordinate from this component
      */
     public void updateEyePosition(double mouseX, double mouseY) {
-        double localMouseX = mouseX - (this.getWidth() / 2.0);
-        double localMouseY = mouseY - (this.getHeight() / 2.0);
+        double localMouseX = mouseX - outerEyeball.getRadiusX();
+        double localMouseY = mouseY - outerEyeball.getRadiusY();
         computeEyePosition(localMouseX, localMouseY);
     }
 
     private void computeEyePosition(double localMouseX, double localMouseY) {
         double parameter = Math.atan2(localMouseY, localMouseX);
-        final double width = this.getWidth();
-        final double height = this.getHeight();
 
-        double eyeX = width / 4.0 * Math.cos(parameter);
+        double eyeX = outerEyeball.getRadiusX() / 2.0 * Math.cos(parameter);
         if (Math.abs(localMouseX) < Math.abs(eyeX)) {
             eyeX = localMouseX;
         }
-        double eyeY = height / 4.0 * Math.cos(parameter);
+        double eyeY = outerEyeball.getRadiusY() / 2.0 * Math.sin(parameter);
         if ((Math.abs(localMouseY) < Math.abs(eyeY))) {
             eyeY = localMouseY;
         }
