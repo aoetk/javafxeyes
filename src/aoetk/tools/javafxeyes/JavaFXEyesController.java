@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 
 import javax.swing.*;
@@ -13,6 +14,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class JavaFXEyesController implements Initializable {
+
+    @FXML
+    private HBox rootPane;
 
     @FXML
     private Eye leftEye;
@@ -39,13 +43,17 @@ public class JavaFXEyesController implements Initializable {
     }
 
     private void updateEye(int mouseX, int mouseY) {
-        final Scene scene = leftEye.getScene();
-        final Window window = scene.getWindow();
+        final Window window = getWindow();
         final double windowX = window.getX();
         final double windowY = window.getY();
-        final double titleHeight = window.getHeight() - scene.getHeight();
+        final double titleHeight = window.getHeight() - rootPane.getHeight();
         leftEye.updateEyePosition(mouseX - windowX, mouseY - windowY - titleHeight);
         rightEye.updateEyePosition(mouseX - windowX - leftEye.getWidth() - 5, mouseY - windowY - titleHeight);
+    }
+
+    private Window getWindow() {
+        final Scene scene = rootPane.getScene();
+        return scene.getWindow();
     }
 
 }
