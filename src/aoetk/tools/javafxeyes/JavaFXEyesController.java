@@ -24,15 +24,41 @@ public class JavaFXEyesController implements Initializable {
     @FXML
     private Eye rightEye;
 
+    private AnimationTimer timer;
+
+    private double diffMouseX;
+
+    private double diffMouseY;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        final AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 updateMousePosition();
             }
         };
         timer.start();
+        addListeners();
+    }
+
+    private void addListeners() {
+        rootPane.setOnMousePressed(event -> {
+            timer.stop();
+            final double screenX = event.getScreenX();
+            final double screenY = event.getScreenY();
+            final Window window = getWindow();
+            diffMouseX = screenX - window.getX();
+            diffMouseY = screenY - window.getY();
+            event.consume();
+        });
+        rootPane.setOnMouseDragged(event -> {
+            final Window window = getWindow();
+            window.setX(event.getScreenX() - diffMouseX);
+            window.setY(event.getScreenY() - diffMouseY);
+            event.consume();
+        });
+        rootPane.setOnMouseReleased(event -> timer.start());
     }
 
     private void updateMousePosition() {
