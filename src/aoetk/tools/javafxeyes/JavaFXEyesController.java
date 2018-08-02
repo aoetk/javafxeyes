@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 
@@ -26,6 +29,8 @@ public class JavaFXEyesController implements Initializable {
 
     private AnimationTimer timer;
 
+    private ContextMenu contextMenu;
+
     private double diffMouseX;
 
     private double diffMouseY;
@@ -39,7 +44,17 @@ public class JavaFXEyesController implements Initializable {
             }
         };
         timer.start();
+        contextMenu = createContextMenu();
         addListeners();
+    }
+
+    private ContextMenu createContextMenu() {
+        final MenuItem exitMenu = new MenuItem("Quit JavaFXEyes");
+        exitMenu.setOnAction(event -> {
+            timer.stop();
+            Platform.exit();
+        });
+        return new ContextMenu(exitMenu);
     }
 
     private void addListeners() {
@@ -59,6 +74,11 @@ public class JavaFXEyesController implements Initializable {
             event.consume();
         });
         rootPane.setOnMouseReleased(event -> timer.start());
+        rootPane.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                contextMenu.show(getWindow(), event.getScreenX(), event.getScreenY());
+            }
+        });
     }
 
     private void updateMousePosition() {
