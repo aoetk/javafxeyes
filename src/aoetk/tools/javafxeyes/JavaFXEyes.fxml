@@ -3,10 +3,11 @@
 <?import aoetk.tools.javafxeyes.Eye?>
 <?import javafx.scene.layout.HBox?>
 
-
-<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0"
+<HBox fx:id="rootPane" alignment="CENTER_LEFT"
+      maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0"
+      style="-fx-background-color: transparent"
       xmlns="http://javafx.com/javafx/10" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="aoetk.tools.javafxeyes.JavaFXEyesController" fx:id="rootPane">
+      fx:controller="aoetk.tools.javafxeyes.JavaFXEyesController">
    <children>
       <Eye fx:id="leftEye" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
       <Eye fx:id="rightEye" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
