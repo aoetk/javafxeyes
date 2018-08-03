@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -58,6 +59,8 @@ public class JavaFXEyesController implements Initializable {
     }
 
     private void addListeners() {
+        rootPane.setOnMouseEntered(event -> rootPane.setCursor(Cursor.OPEN_HAND));
+        rootPane.setOnMouseExited(event -> rootPane.setCursor(Cursor.DEFAULT));
         rootPane.setOnMousePressed(event -> {
             timer.stop();
             final double screenX = event.getScreenX();
@@ -65,6 +68,7 @@ public class JavaFXEyesController implements Initializable {
             final Window window = getWindow();
             diffMouseX = screenX - window.getX();
             diffMouseY = screenY - window.getY();
+            rootPane.setCursor(Cursor.CLOSED_HAND);
             event.consume();
         });
         rootPane.setOnMouseDragged(event -> {
@@ -73,7 +77,10 @@ public class JavaFXEyesController implements Initializable {
             window.setY(event.getScreenY() - diffMouseY);
             event.consume();
         });
-        rootPane.setOnMouseReleased(event -> timer.start());
+        rootPane.setOnMouseReleased(event -> {
+            timer.start();
+            rootPane.setCursor(Cursor.OPEN_HAND);
+        });
         rootPane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 contextMenu.show(getWindow(), event.getScreenX(), event.getScreenY());
