@@ -31,11 +31,26 @@ public class Main extends Application {
         primaryStage.setTitle("JavaFXEyes");
         primaryStage.setScene(new Scene(base, Color.TRANSPARENT));
         primaryStage.initStyle(StageStyle.TRANSPARENT);
+        restoreSettings(primaryStage);
         primaryStage.show();
+    }
+
+    private void restoreSettings(Stage primaryStage) {
+        final ApplicationSettings settings = ApplicationSettings.getInstance();
+        primaryStage.setX(settings.getStageX());
+        primaryStage.setY(settings.getStageY());
+        settings.stageXProperty().bind(primaryStage.xProperty());
+        settings.stageYProperty().bind(primaryStage.yProperty());
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        final ApplicationSettings settings = ApplicationSettings.getInstance();
+        settings.save();
     }
 
 }
