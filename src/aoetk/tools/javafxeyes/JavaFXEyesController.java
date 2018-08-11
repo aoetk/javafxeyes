@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 
@@ -33,6 +34,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class JavaFXEyesController implements Initializable {
+
+    private static final double RESIZE_MARGIN = 10.0;
 
     @FXML
     private HBox rootPane;
@@ -74,7 +77,7 @@ public class JavaFXEyesController implements Initializable {
     }
 
     private void addListeners() {
-        rootPane.setOnMouseEntered(event -> rootPane.setCursor(Cursor.OPEN_HAND));
+        rootPane.setOnMouseMoved(this::changeMouseCursor);
         rootPane.setOnMouseExited(event -> rootPane.setCursor(Cursor.DEFAULT));
         rootPane.setOnMousePressed(event -> {
             timer.stop();
@@ -101,6 +104,36 @@ public class JavaFXEyesController implements Initializable {
                 contextMenu.show(getWindow(), event.getScreenX(), event.getScreenY());
             }
         });
+    }
+
+    private void changeMouseCursor(MouseEvent event) {
+        final double sceneX = event.getSceneX();
+        final double sceneY = event.getSceneY();
+        if (sceneX <= RESIZE_MARGIN) {
+            if (sceneY <= RESIZE_MARGIN) {
+                rootPane.setCursor(Cursor.NW_RESIZE);
+            } else if (sceneY > RESIZE_MARGIN && sceneY <= rootPane.getHeight() - RESIZE_MARGIN) {
+                rootPane.setCursor(Cursor.H_RESIZE);
+            } else {
+                rootPane.setCursor(Cursor.SW_RESIZE);
+            }
+        } else if (sceneX > RESIZE_MARGIN && sceneX <= rootPane.getWidth() - RESIZE_MARGIN) {
+            if (sceneY <= RESIZE_MARGIN) {
+                rootPane.setCursor(Cursor.V_RESIZE);
+            } else if (sceneY > RESIZE_MARGIN && sceneY <= rootPane.getHeight() - RESIZE_MARGIN) {
+                rootPane.setCursor(Cursor.OPEN_HAND);
+            } else {
+                rootPane.setCursor(Cursor.V_RESIZE);
+            }
+        } else {
+            if (sceneY <= RESIZE_MARGIN) {
+                rootPane.setCursor(Cursor.NE_RESIZE);
+            } else if (sceneY > RESIZE_MARGIN && sceneY <= rootPane.getHeight() - RESIZE_MARGIN) {
+                rootPane.setCursor(Cursor.H_RESIZE);
+            } else {
+                rootPane.setCursor(Cursor.SE_RESIZE);
+            }
+        }
     }
 
     private void updateMousePosition() {
