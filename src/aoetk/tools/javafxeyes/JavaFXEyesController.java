@@ -50,9 +50,9 @@ public class JavaFXEyesController implements Initializable {
 
     private ContextMenu contextMenu;
 
-    private double diffMouseX;
+    private InitWindowState initWindowState;
 
-    private double diffMouseY;
+    private InitMouseState initMouseState;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,23 +81,22 @@ public class JavaFXEyesController implements Initializable {
         rootPane.setOnMouseExited(event -> rootPane.setCursor(Cursor.DEFAULT));
         rootPane.setOnMousePressed(event -> {
             timer.stop();
-            final double screenX = event.getScreenX();
-            final double screenY = event.getScreenY();
             final Window window = getWindow();
-            diffMouseX = screenX - window.getX();
-            diffMouseY = screenY - window.getY();
+            initWindowState = new InitWindowState(window.getX(), window.getY(), window.getWidth(), window.getHeight());
+            initMouseState = new InitMouseState(event.getScreenX(), event.getScreenY());
             rootPane.setCursor(Cursor.CLOSED_HAND);
             event.consume();
         });
         rootPane.setOnMouseDragged(event -> {
             final Window window = getWindow();
-            window.setX(event.getScreenX() - diffMouseX);
-            window.setY(event.getScreenY() - diffMouseY);
+            window.setX(initWindowState.x + event.getScreenX() - initMouseState.screenX);
+            window.setY(initWindowState.y + event.getScreenY() - initMouseState.screenY);
             event.consume();
         });
         rootPane.setOnMouseReleased(event -> {
             timer.start();
             rootPane.setCursor(Cursor.OPEN_HAND);
+            initWindowState = null;
         });
         rootPane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
@@ -155,6 +154,36 @@ public class JavaFXEyesController implements Initializable {
     private Window getWindow() {
         final Scene scene = rootPane.getScene();
         return scene.getWindow();
+    }
+
+    private class InitWindowState {
+
+        private final double x;
+
+        private final double y;
+
+        private final double width;
+
+        private final double height;
+
+        private InitWindowState(double x, double y, double width, double height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+    }
+
+    private class InitMouseState {
+
+        private final double screenX;
+
+        private final double screenY;
+
+        private InitMouseState(double screenX, double screenY) {
+            this.screenX = screenX;
+            this.screenY = screenY;
+        }
     }
 
 }
