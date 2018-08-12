@@ -54,6 +54,8 @@ public class JavaFXEyesController implements Initializable {
 
     private InitMouseState initMouseState;
 
+    private EventType eventType = EventType.NONE;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         timer = new AnimationTimer() {
@@ -84,25 +86,74 @@ public class JavaFXEyesController implements Initializable {
             final Window window = getWindow();
             initWindowState = new InitWindowState(window.getX(), window.getY(), window.getWidth(), window.getHeight());
             initMouseState = new InitMouseState(event.getScreenX(), event.getScreenY());
-            rootPane.setCursor(Cursor.CLOSED_HAND);
+            if (rootPane.getCursor() == Cursor.OPEN_HAND) {
+                rootPane.setCursor(Cursor.CLOSED_HAND);
+                eventType = EventType.MOVE;
+            } else if (rootPane.getCursor() == Cursor.H_RESIZE) {
+                eventType = EventType.WIDTH_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.V_RESIZE) {
+                eventType = EventType.HEIGHT_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.NE_RESIZE
+                    || rootPane.getCursor() == Cursor.NW_RESIZE
+                    || rootPane.getCursor() == Cursor.SE_RESIZE
+                    || rootPane.getCursor() == Cursor.SW_RESIZE) {
+                eventType = EventType.RESIZE;
+            }
             event.consume();
         });
         rootPane.setOnMouseDragged(event -> {
-            final Window window = getWindow();
-            window.setX(initWindowState.x + event.getScreenX() - initMouseState.screenX);
-            window.setY(initWindowState.y + event.getScreenY() - initMouseState.screenY);
+            switch (eventType) {
+                case MOVE:
+                    moveWindow(event);
+                    break;
+                case RESIZE:
+                    resizeWindow(event);
+                    break;
+                case HEIGHT_RESIZE:
+                    resizeWindowHeight(event);
+                    break;
+                case WIDTH_RESIZE:
+                    resizeWindowWidth(event);
+                    break;
+            }
             event.consume();
         });
         rootPane.setOnMouseReleased(event -> {
             timer.start();
-            rootPane.setCursor(Cursor.OPEN_HAND);
+            if (rootPane.getCursor() == Cursor.CLOSED_HAND) {
+                rootPane.setCursor(Cursor.OPEN_HAND);
+            }
             initWindowState = null;
+            initMouseState = null;
+            eventType = EventType.NONE;
         });
         rootPane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 contextMenu.show(getWindow(), event.getScreenX(), event.getScreenY());
             }
         });
+    }
+
+    private void resizeWindowHeight(MouseEvent event) {
+        final Window window = getWindow();
+        window.setHeight(initWindowState.height + event.getScreenY() - initMouseState.screenY);
+    }
+
+    private void resizeWindowWidth(MouseEvent event) {
+        final Window window = getWindow();
+        window.setWidth(initWindowState.width + event.getScreenX() - initMouseState.screenX);
+    }
+
+    private void resizeWindow(MouseEvent event) {
+        final Window window = getWindow();
+        window.setWidth(initWindowState.width + event.getScreenX() - initMouseState.screenX);
+        window.setHeight(initWindowState.height + event.getScreenY() - initMouseState.screenY);
+    }
+
+    private void moveWindow(MouseEvent event) {
+        final Window window = getWindow();
+        window.setX(initWindowState.x + event.getScreenX() - initMouseState.screenX);
+        window.setY(initWindowState.y + event.getScreenY() - initMouseState.screenY);
     }
 
     private void changeMouseCursor(MouseEvent event) {
@@ -184,6 +235,10 @@ public class JavaFXEyesController implements Initializable {
             this.screenX = screenX;
             this.screenY = screenY;
         }
+    }
+
+    private enum EventType {
+        MOVE, RESIZE, HEIGHT_RESIZE, WIDTH_RESIZE, NONE
     }
 
 }
