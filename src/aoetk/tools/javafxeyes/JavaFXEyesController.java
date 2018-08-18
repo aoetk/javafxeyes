@@ -89,31 +89,65 @@ public class JavaFXEyesController implements Initializable {
             if (rootPane.getCursor() == Cursor.OPEN_HAND) {
                 rootPane.setCursor(Cursor.CLOSED_HAND);
                 eventType = EventType.MOVE;
-            } else if (rootPane.getCursor() == Cursor.H_RESIZE) {
-                eventType = EventType.WIDTH_RESIZE;
-            } else if (rootPane.getCursor() == Cursor.V_RESIZE) {
-                eventType = EventType.HEIGHT_RESIZE;
-            } else if (rootPane.getCursor() == Cursor.NE_RESIZE
-                    || rootPane.getCursor() == Cursor.NW_RESIZE
-                    || rootPane.getCursor() == Cursor.SE_RESIZE
-                    || rootPane.getCursor() == Cursor.SW_RESIZE) {
-                eventType = EventType.RESIZE;
+            } else if (rootPane.getCursor() == Cursor.N_RESIZE) {
+                eventType = EventType.N_HEIGHT_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.S_RESIZE) {
+                eventType = EventType.S_HEIGHT_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.W_RESIZE) {
+                eventType = EventType.W_WIDTH_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.E_RESIZE) {
+                eventType = EventType.E_WIDTH_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.NE_RESIZE) {
+                eventType = EventType.NE_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.NW_RESIZE) {
+                eventType = EventType.NW_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.SE_RESIZE) {
+                eventType = EventType.SE_RESIZE;
+            } else if (rootPane.getCursor() == Cursor.SW_RESIZE) {
+                eventType = EventType.SW_RESIZE;
             }
             event.consume();
         });
         rootPane.setOnMouseDragged(event -> {
+            final Window window = getWindow();
             switch (eventType) {
                 case MOVE:
-                    moveWindow(event);
+                    moveX(event, window);
+                    moveY(event, window);
                     break;
-                case RESIZE:
-                    resizeWindow(event);
+                case NW_RESIZE:
+                    moveX(event, window);
+                    moveY(event, window);
+                    resizeWindowWidth(event, window, false);
+                    resizeWindowHeight(event, window, false);
                     break;
-                case HEIGHT_RESIZE:
-                    resizeWindowHeight(event);
+                case W_WIDTH_RESIZE:
+                    moveX(event, window);
+                    resizeWindowWidth(event, window, false);
                     break;
-                case WIDTH_RESIZE:
-                    resizeWindowWidth(event);
+                case SW_RESIZE:
+                    moveX(event, window);
+                    resizeWindowWidth(event, window, false);
+                    resizeWindowHeight(event, window, true);
+                    break;
+                case N_HEIGHT_RESIZE:
+                    moveY(event, window);
+                    resizeWindowHeight(event, window, false);
+                    break;
+                case S_HEIGHT_RESIZE:
+                    resizeWindowHeight(event, window, true);
+                    break;
+                case NE_RESIZE:
+                    moveY(event, window);
+                    resizeWindowWidth(event, window, true);
+                    resizeWindowHeight(event, window, false);
+                    break;
+                case E_WIDTH_RESIZE:
+                    resizeWindowWidth(event, window, true);
+                    break;
+                case SE_RESIZE:
+                    resizeWindowWidth(event, window, true);
+                    resizeWindowHeight(event, window, true);
                     break;
             }
             event.consume();
@@ -134,26 +168,30 @@ public class JavaFXEyesController implements Initializable {
         });
     }
 
-    private void resizeWindowHeight(MouseEvent event) {
-        final Window window = getWindow();
-        window.setHeight(initWindowState.height + event.getScreenY() - initMouseState.screenY);
+    private void resizeWindowHeight(MouseEvent event, Window window, boolean forward) {
+        final double diffY = event.getScreenY() - initMouseState.screenY;
+        if (forward) {
+            window.setHeight(initWindowState.height + diffY);
+        } else {
+            window.setHeight(initWindowState.height - diffY);
+        }
     }
 
-    private void resizeWindowWidth(MouseEvent event) {
-        final Window window = getWindow();
-        window.setWidth(initWindowState.width + event.getScreenX() - initMouseState.screenX);
+    private void resizeWindowWidth(MouseEvent event, Window window, boolean forward) {
+        final double diffX = event.getScreenX() - initMouseState.screenX;
+        if (forward) {
+            window.setWidth(initWindowState.width + diffX);
+        } else {
+            window.setWidth(initWindowState.width - diffX);
+        }
     }
 
-    private void resizeWindow(MouseEvent event) {
-        final Window window = getWindow();
-        window.setWidth(initWindowState.width + event.getScreenX() - initMouseState.screenX);
-        window.setHeight(initWindowState.height + event.getScreenY() - initMouseState.screenY);
-    }
-
-    private void moveWindow(MouseEvent event) {
-        final Window window = getWindow();
-        window.setX(initWindowState.x + event.getScreenX() - initMouseState.screenX);
+    private void moveY(MouseEvent event, Window window) {
         window.setY(initWindowState.y + event.getScreenY() - initMouseState.screenY);
+    }
+
+    private void moveX(MouseEvent event, Window window) {
+        window.setX(initWindowState.x + event.getScreenX() - initMouseState.screenX);
     }
 
     private void changeMouseCursor(MouseEvent event) {
@@ -163,23 +201,23 @@ public class JavaFXEyesController implements Initializable {
             if (sceneY <= RESIZE_MARGIN) {
                 rootPane.setCursor(Cursor.NW_RESIZE);
             } else if (sceneY > RESIZE_MARGIN && sceneY <= rootPane.getHeight() - RESIZE_MARGIN) {
-                rootPane.setCursor(Cursor.H_RESIZE);
+                rootPane.setCursor(Cursor.W_RESIZE);
             } else {
                 rootPane.setCursor(Cursor.SW_RESIZE);
             }
         } else if (sceneX > RESIZE_MARGIN && sceneX <= rootPane.getWidth() - RESIZE_MARGIN) {
             if (sceneY <= RESIZE_MARGIN) {
-                rootPane.setCursor(Cursor.V_RESIZE);
+                rootPane.setCursor(Cursor.N_RESIZE);
             } else if (sceneY > RESIZE_MARGIN && sceneY <= rootPane.getHeight() - RESIZE_MARGIN) {
                 rootPane.setCursor(Cursor.OPEN_HAND);
             } else {
-                rootPane.setCursor(Cursor.V_RESIZE);
+                rootPane.setCursor(Cursor.S_RESIZE);
             }
         } else {
             if (sceneY <= RESIZE_MARGIN) {
                 rootPane.setCursor(Cursor.NE_RESIZE);
             } else if (sceneY > RESIZE_MARGIN && sceneY <= rootPane.getHeight() - RESIZE_MARGIN) {
-                rootPane.setCursor(Cursor.H_RESIZE);
+                rootPane.setCursor(Cursor.E_RESIZE);
             } else {
                 rootPane.setCursor(Cursor.SE_RESIZE);
             }
@@ -238,7 +276,8 @@ public class JavaFXEyesController implements Initializable {
     }
 
     private enum EventType {
-        MOVE, RESIZE, HEIGHT_RESIZE, WIDTH_RESIZE, NONE
+        MOVE, NW_RESIZE, NE_RESIZE, SW_RESIZE, SE_RESIZE, N_HEIGHT_RESIZE, S_HEIGHT_RESIZE, W_WIDTH_RESIZE,
+        E_WIDTH_RESIZE, NONE
     }
 
 }
