@@ -26,10 +26,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.robot.Robot;
 import javafx.stage.Window;
 
-import javax.swing.*;
-import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -56,8 +55,11 @@ public class JavaFXEyesController implements Initializable {
 
     private EventType eventType = EventType.NONE;
 
+    private Robot robot;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        robot = new Robot();
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -225,13 +227,10 @@ public class JavaFXEyesController implements Initializable {
     }
 
     private void updateMousePosition() {
-        SwingUtilities.invokeLater(() -> {
-            final Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
-            Platform.runLater(() -> updateEye(pointerLocation.x, pointerLocation.y));
-        });
+        updateEye(robot.getMouseX(), robot.getMouseY());
     }
 
-    private void updateEye(int mouseX, int mouseY) {
+    private void updateEye(double mouseX, double mouseY) {
         final Window window = getWindow();
         final double windowX = window.getX();
         final double windowY = window.getY();
