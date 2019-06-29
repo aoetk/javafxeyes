@@ -6,12 +6,20 @@ XEyes clone using JavaFX.
 How to use
 ----------
 
-Use [IntelliJ IDEA](https://www.jetbrains.com/idea/) to build the application.  
-Select `[Build] - [Build Artifacts...]` and execute `Build` action then `javafxeyes.jar` is created to `out/artifacts/javafxeyes`directory.  
-Execute the JAR file to start the application.
+Run the application using gradle.
 
-This application can be moved by drag & drop.  
+```
+$ ./gradlew run
+```
+
+This application can be moved by drag & drop and can be resized.  
 To quit the application, select the menu `Quit JavaFXEyes` appeared by right-clicking.
+
+Caution
+-------
+
+This application uses Java Preferences API to save app's position and size.  
+The namespace of the preference is `aoetk.tools.javafxeyes`.
 
 License
 -------
