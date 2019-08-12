@@ -14,4 +14,4 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-mainClassName = 'aoetk.tools.javafxeyes.Main'
+mainClassName = 'aoetk.tools.javafxeyes/aoetk.tools.javafxeyes.Main'
