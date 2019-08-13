@@ -84,8 +84,10 @@ public class JavaFXEyesController implements Initializable {
 
     private void resetSettings() {
         Window window = getWindow();
-        window.setX(0.0);
-        window.setY(0.0);
+        window.setX(ApplicationSettings.DEFAULT_STAGE_X);
+        window.setY(ApplicationSettings.DEFAULT_STAGE_Y);
+        window.setWidth(ApplicationSettings.DEFAULT_WIDTH);
+        window.setHeight(ApplicationSettings.DEFAULT_HEIGHT);
     }
 
     private void addListeners() {

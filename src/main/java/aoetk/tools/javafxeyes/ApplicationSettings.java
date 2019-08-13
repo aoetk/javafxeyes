@@ -27,13 +27,37 @@ import java.util.prefs.Preferences;
  */
 public class ApplicationSettings {
 
+    /**
+     * Initial x origin.
+     */
+    static final double DEFAULT_STAGE_X = 0.0;
+
+    /**
+     * Initial y origin.
+     */
+    static final double DEFAULT_STAGE_Y = 0.0;
+
+    /**
+     * Initial width of a window.
+     */
+    static final double DEFAULT_WIDTH = 145.0;
+
+    /**
+     * Initial height of a window.
+     */
+    static final double DEFAULT_HEIGHT = 100.0;
+
     private static final ApplicationSettings INSTANCE = new ApplicationSettings();
 
     private Preferences prefs;
 
-    private DoubleProperty stageX = new SimpleDoubleProperty(this, "stageX", 0.0);
+    private DoubleProperty stageX = new SimpleDoubleProperty(this, "stageX", DEFAULT_STAGE_X);
 
-    private DoubleProperty stageY = new SimpleDoubleProperty(this, "stageY", 0.0);
+    private DoubleProperty stageY = new SimpleDoubleProperty(this, "stageY", DEFAULT_STAGE_Y);
+
+    private DoubleProperty stageWidth = new SimpleDoubleProperty(this, "stageWidth", DEFAULT_WIDTH);
+
+    private DoubleProperty stageHeight = new SimpleDoubleProperty(this, "stageHeight", DEFAULT_HEIGHT);
 
     private ApplicationSettings() {
         prefs = Preferences.userNodeForPackage(ApplicationSettings.class);
@@ -49,6 +73,8 @@ public class ApplicationSettings {
         Objects.requireNonNull(prefs);
         prefs.putDouble(stageX.getName(), stageX.get());
         prefs.putDouble(stageY.getName(), stageY.get());
+        prefs.putDouble(stageWidth.getName(), stageWidth.get());
+        prefs.putDouble(stageHeight.getName(), stageHeight.get());
         prefs.flush();
     }
 
@@ -56,6 +82,8 @@ public class ApplicationSettings {
         Objects.requireNonNull(prefs);
         stageX.set(prefs.getDouble(stageX.getName(), stageX.get()));
         stageY.set(prefs.getDouble(stageY.getName(), stageY.get()));
+        stageWidth.set(prefs.getDouble(stageWidth.getName(), stageWidth.get()));
+        stageHeight.set(prefs.getDouble(stageHeight.getName(), stageHeight.get()));
     }
 
     public static ApplicationSettings getInstance() {
@@ -84,6 +112,30 @@ public class ApplicationSettings {
 
     public final void setStageY(double stageY) {
         this.stageY.set(stageY);
+    }
+
+    public double getStageWidth() {
+        return stageWidth.get();
+    }
+
+    public DoubleProperty stageWidthProperty() {
+        return stageWidth;
+    }
+
+    public void setStageWidth(double stageWidth) {
+        this.stageWidth.set(stageWidth);
+    }
+
+    public double getStageHeight() {
+        return stageHeight.get();
+    }
+
+    public DoubleProperty stageHeightProperty() {
+        return stageHeight;
+    }
+
+    public void setStageHeight(double stageHeight) {
+        this.stageHeight.set(stageHeight);
     }
 
 }

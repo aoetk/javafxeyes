@@ -39,8 +39,12 @@ public class Main extends Application {
         final ApplicationSettings settings = ApplicationSettings.getInstance();
         primaryStage.setX(settings.getStageX());
         primaryStage.setY(settings.getStageY());
+        primaryStage.setWidth(settings.getStageWidth());
+        primaryStage.setHeight(settings.getStageHeight());
         settings.stageXProperty().bind(primaryStage.xProperty());
         settings.stageYProperty().bind(primaryStage.yProperty());
+        settings.stageWidthProperty().bind(primaryStage.widthProperty());
+        settings.stageHeightProperty().bind(primaryStage.heightProperty());
     }
 
     public static void main(String[] args) {
