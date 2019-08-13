@@ -252,7 +252,7 @@ public class JavaFXEyesController implements Initializable {
         return scene.getWindow();
     }
 
-    private class InitWindowState {
+    private static class InitWindowState {
 
         private final double x;
 
@@ -270,7 +270,7 @@ public class JavaFXEyesController implements Initializable {
         }
     }
 
-    private class InitMouseState {
+    private static class InitMouseState {
 
         private final double screenX;
 
