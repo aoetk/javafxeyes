@@ -72,12 +72,20 @@ public class JavaFXEyesController implements Initializable {
     }
 
     private ContextMenu createContextMenu() {
+        final MenuItem resetMenu = new MenuItem("Reset Settings");
+        resetMenu.setOnAction(event -> resetSettings());
         final MenuItem exitMenu = new MenuItem("Quit JavaFXEyes");
         exitMenu.setOnAction(event -> {
             timer.stop();
             Platform.exit();
         });
-        return new ContextMenu(exitMenu);
+        return new ContextMenu(resetMenu, exitMenu);
+    }
+
+    private void resetSettings() {
+        Window window = getWindow();
+        window.setX(0.0);
+        window.setY(0.0);
     }
 
     private void addListeners() {
